@@ -1,0 +1,15 @@
+{
+  "name": "sql-tedious",
+  "version": "0.0.0",
+  "description": "mssql tedious wrapper",
+  "main": "./lib/sql-tedious.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kevin Barnett <kevinbarnett5506@gmail.com>",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "tedious": "~1.8.1",
+    "generic-pool": "~2.1.1"
+  }
+}
