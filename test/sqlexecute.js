@@ -1,26 +1,24 @@
 ﻿var SqlExecute = require( '../lib/SqlExecute.js' );
 
-var settings = require( '/srv/www/settings.json' ).sql;
-var DataServers = settings.DataServers;
-var connections = [];
-var servers = settings.RemoteAddress;
+var settings = require( './settings.json' );
+settings.DB1.failover = settings.DB2;
+settings.DB2.failover = settings.DB1;
 
-var i;
-for ( i = 1; i < 5; i++ ) {
-    var db = settings["DataLogon" + i];
-    db.failPartner = DataServers["db" + i].failPartner;
-    db.failover = settings["DataLogon" + db.failPartner];
-    db.server = servers[i];
-    db.options = {}
+var params = {id: 1234, name: "Kevin Barnett", now: new Date(), AssocID: 10082};
+var connection = settings.DB1 || { server: "localhost", database: "dbname", userName: "User", password: "password", options: {} };
 
-    connections[i] = db;    
-}
+var statement = "Select top (1) id From member_info Where Associd = @Associd;"
 
-var params = {id: 1234, name: "Kevin Barnett", now: new Date()};
-var connection = { server: "localhost", database: "dbname", userName: "User", password: "password", options: {} };
-var statement = "Select * From forms Where id = @id and name = @name and createdDate < @now;"
+var counter = 0;
 
-var sqlexecute = new SqlExecute( [statement, params, connection, function ( err, result ) {
-    if ( err ) { console.log( err ); }
-    console.log( result );
+setInterval( function () {     
+    var sqlexecute = new SqlExecute( [statement, params, connection, function ( err, result ) {
+            if ( err ) { return console.log( err ); }
+            
+            //after 5 successful logins set connection back to 
+            console.log( "Success - " + counter );
+
+            counter++;
     }] );
+
+}, 5000 );
